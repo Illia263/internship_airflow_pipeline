@@ -1,1 +1,4 @@
 venv/
+source/
+*.csv/
+*.log
