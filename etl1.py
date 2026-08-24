@@ -12,7 +12,7 @@ from tenacity import retry, wait_random_exponential, retry_if_exception_type, st
 import tempfile
 import pendulum
 from airflow.sdk import ObjectStoragePath, dag, task
-import psycopg2
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 import logging
 
 
@@ -44,7 +44,8 @@ def taxi_pipeline():
 
     @task
     def load(input_path, target_month):
-        DB = psycopg2.connect("dbname=taxi user=postgres password=postgres host=localhost")
+        hook = PostgresHook(postgres_conn_id="internship_airflow_pipeline")
+        DB = hook.get_conn()
         logger.info(f"load_started, path={input_path}")
         error_count = 0
         total_rows = 0
